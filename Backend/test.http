@@ -1,0 +1,82 @@
+# Register User
+POST http://localhost:4000/user-api/users
+Content-Type: application/json
+
+{
+    "firstName":"user2",
+    "lastName":"2",
+    "email":"user2@",
+    "password":"passss",
+    "profileImageUrl":"kasbckaj"
+}
+
+###login User
+POST http://localhost:4000/user-api/login
+Content-Type: application/json
+
+{
+     "email":"user2@",
+     "password":"passss"
+}
+
+###logout user
+GET http://localhost:4000/user-api/logout
+
+###add expenses
+POST http://localhost:4000/expense-api/expenses
+Content-Type: application/json
+
+{
+    "type":"expense",
+    "amount":5000,
+    "category":"Transport",
+    "date":"2026-01-14"
+}
+
+###add income
+POST http://localhost:4000/expense-api/expenses
+Content-Type: application/json
+
+{
+    "type":"income",
+    "amount":800000
+}
+###GET expenses
+
+GET http://localhost:4000/expense-api/expenses
+
+###GET expense by catogery
+GET http://localhost:4000/expense-api/expenses/Bills
+
+###delete expense by id
+PUT http://localhost:4000/expense-api/expenses/69b7cbd4c6c7c75900ae09bf
+
+### monthly-summary
+GET http://localhost:4000/expense-api/monthly-summary
+
+### summary
+GET http://localhost:4000/expense-api/summary
+
+### category-summary
+GET http://localhost:4000/expense-api/category-summary
+###/top-category
+GET http://localhost:4000/expense-api/top-category
+
+### add budget
+POST http://localhost:4000/budget-api/budget
+Content-Type: application/json
+
+{
+    "month":3,
+    "year":2026,
+    "budgetAmount":200000
+}
+
+### total 
+GET http://localhost:4000/budget-api/budget
+
+###check budget
+GET http://localhost:4000/budget-api/check-budget
+
+### update budget
+PUT http://localhost:4000/budget-api/budget/100000
