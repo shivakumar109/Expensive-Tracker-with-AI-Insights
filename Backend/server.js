@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { userRoute } from './APIs/userApi.js';
 import {expenseRoute} from "./APIs/expensesAPI.js"
 import { budgetRoute } from './APIs/budgetAPI.js';
+import { aiRoute } from './APIs/aiApi.js';
 //process.env
 config()
 const  app=exp()
@@ -27,6 +28,7 @@ connectDb();
 app.use('/user-api',userRoute)
 app.use('/expense-api',expenseRoute);
 app.use('/budget-api',budgetRoute);
+app.use('/ai-api',aiRoute)
 //error handling middle ware
 app.use((err,req,res,next)=>{
      res.json({message:"Error ",paylood:err.message});
