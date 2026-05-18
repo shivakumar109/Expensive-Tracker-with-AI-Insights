@@ -7,10 +7,13 @@ import AiInsights from './Components/AiInsights'
 import Reports from './Components/Reports'
 import Login from './Components/Login'
 import Signup from './Components/Signup'
+import UserProfile from './Components/UserProfile'
 import { AuthProvider } from './Context/AuthContext'
 import { ExpenseProvider } from './Context/ExpenseContext'
 import { BudgetProvider } from './Context/BudgetContext'
 import { Toaster } from 'react-hot-toast'
+import ProtectedRoute from './Components/ProtectedRoute'
+import PublicRoute from './Components/PublicRoute'
 
 function App() {
 
@@ -25,23 +28,51 @@ function App() {
         },
         {
           path: 'dashboard',
-          element: <Dashboard />
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )
         },
         {
           path: 'reports',
-          element: <Reports />
+          element: (
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          )
         },
         {
           path: 'aiinsights',
-          element: <AiInsights />
+          element: (
+            <ProtectedRoute>
+              <AiInsights />
+            </ProtectedRoute>
+          )
         },
         {
           path: 'login',
-          element: <Login />
+          element: (
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          )
         },
         {
           path: 'signup',
-          element: <Signup />
+          element: (
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          )
+        },
+        {
+          path: 'profile',
+          element: (
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          )
         }
       ]
     }

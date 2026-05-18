@@ -16,7 +16,7 @@ export const ExpenseProvider = ({ children }) => {
     if (!user) return;
     try {
       setLoading(true);
-      const res = await axiosInstance.get('/expense-api/expenses');
+      const res = await axiosInstance.get('/expense-api/expenses?limit=1000');
       setExpenses(res.data.payload);
       
       const sumRes = await axiosInstance.get('/expense-api/summary');
@@ -51,6 +51,7 @@ export const ExpenseProvider = ({ children }) => {
     } else {
       setExpenses([]);
       setBudget(null);
+      setSummary({ totalIncome: 0, totalExpense: 0, balance: 0 });
     }
   }, [user]);
 
@@ -66,8 +67,32 @@ export const ExpenseProvider = ({ children }) => {
     }
   };
 
+  const editExpense = async (id, expenseData) => {
+    try {
+      await axiosInstance.put(`/expense-api/expenses/${id}`, expenseData);
+      toast.success('Transaction updated');
+      fetchExpenses();
+      fetchBudget();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update');
+      throw error;
+    }
+  };
+
+  const deleteExpense = async (id) => {
+    try {
+      await axiosInstance.delete(`/expense-api/expenses/${id}`);
+      toast.success('Transaction deleted');
+      fetchExpenses();
+      fetchBudget();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete');
+      throw error;
+    }
+  };
+
   return (
-    <ExpenseContext.Provider value={{ expenses, budget, summary, loading, fetchExpenses, fetchBudget, addExpense }}>
+    <ExpenseContext.Provider value={{ expenses, budget, summary, loading, fetchExpenses, fetchBudget, addExpense, editExpense, deleteExpense }}>
       {children}
     </ExpenseContext.Provider>
   );

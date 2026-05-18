@@ -113,6 +113,22 @@ function Header() {
                 </li>
 
                 <li>
+                  <NavLink to="/profile" className="flex items-center gap-2">
+                    {user?.profileImageUrl ? (
+                      <img 
+                        src={user.profileImageUrl} 
+                        alt="Profile" 
+                        className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 shadow-sm transition hover:scale-105" 
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border-2 border-blue-500 shadow-sm transition hover:scale-105">
+                        {user?.firstName ? user.firstName[0].toUpperCase() : 'U'}
+                      </div>
+                    )}
+                  </NavLink>
+                </li>
+
+                <li>
 
                   <button
                     onClick={handleLogout}

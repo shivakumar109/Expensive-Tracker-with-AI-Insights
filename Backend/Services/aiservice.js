@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 export const generateSuggestions = async (summary) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash"
+      model: "gemini-2.5-flash"
     });
 
     const prompt = `
@@ -35,7 +35,7 @@ Give 5 simple and practical money-saving tips based on the category breakdown. B
 export const chatWithAI = async (message, summary) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash"
+      model: "gemini-2.5-flash"
     });
 
     const prompt = `

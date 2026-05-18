@@ -1,45 +1,47 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ExpenseContext } from '../Context/ExpenseContext';
-import { ExpensePieChart, IncomeExpenseBarChart } from './ExpenseChart';
-import { FiDownload, FiFileText } from 'react-icons/fi';
-import html2pdf from 'html2pdf.js';
+import { ExpensePieChart, IncomeExpenseBarChart, YearlyExpenseChart } from './ExpenseChart';
+import { FiFileText, FiEdit2 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import TransactionForm from './TransactionForm';
 
 const Reports = () => {
   const { expenses } = useContext(ExpenseContext);
   const reportRef = useRef();
+  const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const getFormattedDate = () => {
+    return new Date().toISOString().split('T')[0];
+  };
 
   const downloadCSV = () => {
     if (!expenses.length) return toast.error("No data to export");
     const headers = ['Date,Description,Category,Type,Amount'];
     const rows = expenses.map(e => 
-      `${new Date(e.date).toLocaleDateString()},"${e.description || ''}","${e.category || ''}",${e.type},${e.amount}`
+      `${new Date(e.date).toLocaleDateString()},"${(e.description || '').replace(/"/g, '""')}","${e.category || ''}",${e.type},${e.amount}`
     );
-    const csvContent = "data:text/csv;charset=utf-8," + headers.concat(rows).join('\n');
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = headers.concat(rows).join('\n');
+    
+    // Create Blob instead of Data URI for reliability
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "financial_report.csv");
+    link.href = url;
+    link.setAttribute("download", `financial_report_${getFormattedDate()}.csv`);
+    link.style.display = 'none';
+    
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    
     toast.success("CSV downloaded successfully");
   };
 
-  const downloadPDF = () => {
-    if (!expenses.length) return toast.error("No data to export");
-    const element = reportRef.current;
-    const opt = {
-      margin: 0.5,
-      filename: 'financial_report.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-    };
-    html2pdf().set(opt).from(element).save().then(() => {
-      toast.success("PDF downloaded successfully");
-    });
-  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -55,16 +57,10 @@ const Reports = () => {
           >
             <FiFileText className="mr-2" /> Export CSV
           </button>
-          <button 
-            onClick={downloadPDF}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-500/30 transition-all font-medium"
-          >
-            <FiDownload className="mr-2" /> Download PDF
-          </button>
         </div>
       </div>
 
-      <div ref={reportRef} className="space-y-6">
+      <div ref={reportRef} className="space-y-6 print-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
             <h3 className="text-xl font-bold text-white mb-6">Expense by Category</h3>
@@ -90,6 +86,17 @@ const Reports = () => {
         </div>
 
         <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
+          <h3 className="text-xl font-bold text-white mb-6">Yearly Trends (Income vs Expense)</h3>
+          <div className="h-[300px] flex justify-center w-full">
+             {expenses.length > 0 ? (
+              <YearlyExpenseChart expenses={expenses} />
+            ) : (
+              <div className="flex items-center text-slate-500">No transactions found</div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
           <h3 className="text-xl font-bold text-white mb-4">Detailed Ledger</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -100,6 +107,7 @@ const Reports = () => {
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4 text-right">Amount</th>
+                  <th className="py-3 px-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -114,7 +122,16 @@ const Reports = () => {
                       </span>
                     </td>
                     <td className={`py-3 px-4 text-right font-bold ${exp.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      ${exp.amount.toFixed(2)}
+                      ₹{exp.amount.toFixed(2)}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <button 
+                        onClick={() => setEditingTransaction(exp)}
+                        className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
+                        title="Edit Transaction"
+                      >
+                        <FiEdit2 size={14} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -123,6 +140,13 @@ const Reports = () => {
           </div>
         </div>
       </div>
+
+      {editingTransaction && (
+        <TransactionForm 
+          onClose={() => setEditingTransaction(null)} 
+          transactionToEdit={editingTransaction} 
+        />
+      )}
     </div>
   );
 };

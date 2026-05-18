@@ -32,7 +32,7 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 1000, // increased to 1000 for complex dashboard loading
   message: "Too many requests from this IP, please try again later."
 });
 app.use(limiter);

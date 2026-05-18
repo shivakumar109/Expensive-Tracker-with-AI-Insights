@@ -31,7 +31,13 @@ aiRoute.get("/suggestions", verifyToken, async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const summary = await getUserFinancialSummary(userId);
-    const suggestions = await generateSuggestions(summary);
+    let suggestions;
+    try {
+      suggestions = await generateSuggestions(summary);
+    } catch (aiError) {
+      console.error('AI Suggestion Generation Failed:', aiError.message);
+      suggestions = "Unable to generate AI insights right now due to server load. Please monitor your budget manually.";
+    }
     
     res.status(200).json({
       message: "AI suggestions generated",
@@ -53,7 +59,13 @@ aiRoute.post("/chat", verifyToken, async (req, res, next) => {
     }
 
     const summary = await getUserFinancialSummary(userId);
-    const reply = await chatWithAI(message, summary);
+    let reply;
+    try {
+      reply = await chatWithAI(message, summary);
+    } catch (aiError) {
+      console.error('AI Chat Generation Failed:', aiError.message);
+      reply = "Sorry, our AI assistant is currently unavailable. Please try again later.";
+    }
 
     res.status(200).json({
       message: "AI replied",

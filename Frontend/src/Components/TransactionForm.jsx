@@ -1,22 +1,27 @@
 import React, { useState, useContext } from 'react';
 import { ExpenseContext } from '../Context/ExpenseContext';
+import { BudgetContext } from '../Context/BudgetContext';
 import { FiX, FiUploadCloud } from 'react-icons/fi';
 import axiosInstance from '../Services/axiosInstance';
 import toast from 'react-hot-toast';
 
-const TransactionForm = ({ onClose }) => {
-  const { addExpense } = useContext(ExpenseContext);
+const TransactionForm = ({ onClose, transactionToEdit }) => {
+  const { addExpense, editExpense } = useContext(ExpenseContext);
+  const { fetchBudget } = useContext(BudgetContext);
   const [loading, setLoading] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [formData, setFormData] = useState({
-    type: 'expense',
-    amount: '',
-    category: 'Food',
-    description: '',
-    date: new Date().toISOString().split('T')[0]
+    type: transactionToEdit ? transactionToEdit.type : 'expense',
+    amount: transactionToEdit ? transactionToEdit.amount : '',
+    category: transactionToEdit ? transactionToEdit.category : 'Food',
+    description: transactionToEdit ? transactionToEdit.description : '',
+    date: transactionToEdit ? new Date(transactionToEdit.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
   });
 
-  const categories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Education", "Other"];
+  const expenseCategories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Education", "Other"];
+  const incomeCategories = ["Salary", "Business", "Freelance", "Investment", "Other"];
+  
+  const currentCategories = formData.type === 'expense' ? expenseCategories : incomeCategories;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,10 +62,12 @@ const TransactionForm = ({ onClose }) => {
         ...formData,
         amount: Number(formData.amount)
       };
-      if (submissionData.type === 'income') {
-        delete submissionData.category;
+      if (transactionToEdit) {
+        await editExpense(transactionToEdit._id, submissionData);
+      } else {
+        await addExpense(submissionData);
       }
-      await addExpense(submissionData);
+      await fetchBudget(); // Refresh budget for the dashboard
       onClose();
     } catch (error) {
       // Error is handled in context
@@ -73,7 +80,7 @@ const TransactionForm = ({ onClose }) => {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex justify-between items-center p-6 border-b border-slate-700">
-          <h2 className="text-xl font-bold text-white">Add Transaction</h2>
+          <h2 className="text-xl font-bold text-white">{transactionToEdit ? 'Edit Transaction' : 'Add Transaction'}</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
             <FiX size={24} />
           </button>
@@ -103,7 +110,7 @@ const TransactionForm = ({ onClose }) => {
               </button>
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, type: 'income', category: '' })}
+                onClick={() => setFormData({ ...formData, type: 'income', category: 'Salary' })}
                 className={`py-2 rounded-lg font-medium transition-colors ${formData.type === 'income' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 border border-slate-700 text-slate-400'}`}
               >
                 Income
@@ -127,19 +134,17 @@ const TransactionForm = ({ onClose }) => {
               </div>
             </div>
 
-            {formData.type === 'expense' && (
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Category</label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
-                >
-                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+              >
+                {currentCategories.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">Description</label>
