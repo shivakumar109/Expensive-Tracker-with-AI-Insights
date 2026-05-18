@@ -11,7 +11,7 @@ import { budgetRoute } from './APIs/budgetAPI.js';
 import { aiRoute } from './APIs/aiAPI.js';
 import { receiptRoute } from './APIs/receiptAPI.js';
 
-//process.env
+//process.env 
 config()
 
 // Environment Variable Validation
@@ -78,4 +78,4 @@ app.use((err, req, res, next) => {
   };
 
   res.status(statusCode).json(errorResponse);
-});
+});
