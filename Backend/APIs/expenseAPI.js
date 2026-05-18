@@ -5,9 +5,9 @@ import mongoose from "mongoose";
 export const expenseRoute=exp.Router();
 
 
-
 // POST   expenses
-expenseRoute.post("/expenses",verifyToken,async(req,res)=>{
+expenseRoute.post("/expenses",verifyToken,async (req, res, next) =>{
+  try{
      let userId = req.user.userId;
      let expObj=req.body
     if (expObj.type === "expense") {
@@ -25,45 +25,99 @@ expenseRoute.post("/expenses",verifyToken,async(req,res)=>{
     let expenseObj=new ExpenseModel({...expObj,user:userId});
     await expenseObj.save();
     res.status(201).json({message:"expense of user",payload:expenseObj});
+  }
+  catch(error){
+    next(error);
+  }
 })
 
 
 // GET    /expenses
-expenseRoute.get("/expenses",verifyToken,async(req,res)=>{
-    // get userID
-    let user=req.user.userId;
-    // console.log(user);
-    // get expenses with userID
-    let expenseObj=await ExpenseModel.find({user,isActive:true});
-    // send res
-    res.status(201).json({message:"expense of user",payload:expenseObj});
-})
-// GET  specific expense by catogery
-expenseRoute.get("/expenses/:category",verifyToken,async(req,res)=>{
-    // get userId
-    let userId=req.user.userId;
-    let cat=req.params.category;
-    //console.log(userId,cat)
-    // get expenseOBj by userID
-    let expenseObj= await ExpenseModel.find({user:userId,category:cat,isActive:true });
-    // send res
-    res.status(201).json({message:"Object fetched sucessfully",payload:expenseObj})
+expenseRoute.get("/expenses", verifyToken, async (req, res, next) => {
+  try {
+    let user = req.user.userId;
+    const { page = 1, limit = 10, type, category, startDate, endDate } = req.query;
+    
+    let query = { user, isActive: true };
+    if (type) query.type = type;
+    if (category) query.category = category;
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) query.date.$gte = new Date(startDate);
+      if (endDate) query.date.$lte = new Date(endDate);
+    }
+
+    const skip = (page - 1) * limit;
+    
+    let expenseObj = await ExpenseModel.find(query)
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+      
+    const totalCount = await ExpenseModel.countDocuments(query);
+
+    res.status(200).json({
+      message: "Expenses fetched successfully",
+      payload: expenseObj,
+      pagination: {
+        total: totalCount,
+        page: parseInt(page),
+        pages: Math.ceil(totalCount / limit)
+      }
+    });
+  }
+  catch (error) {
+    next(error);
+  }
 })
 
-// Put request to softdelete the income
-expenseRoute.put("/expenses/:id",verifyToken,async(req,res)=>{
-    // GET expenses id from req.params
-    let expid=req.params.id;
-    // Find the expenseObj and make isActive to false
-    let newExpense = await ExpenseModel.findOneAndUpdate(
-    { _id: expid, user: req.user.userId },
-    { isActive: false },
-    { new: true }
-    );
-    // send res
-    res.status(201).json({message:"Deleted succesfully",payload:newExpense});
+// GET  specific expense by category
+expenseRoute.get("/expenses/category/:category", verifyToken, async (req, res, next) => {
+  try {
+    let userId = req.user.userId;
+    let cat = req.params.category;
+    let expenseObj = await ExpenseModel.find({ user: userId, category: cat, isActive: true });
+    res.status(200).json({ message: "Object fetched successfully", payload: expenseObj })
+  }
+  catch (error) {
+    next(error);
+  }
 })
-expenseRoute.get("/monthly-summary", verifyToken, async (req, res) => {
+
+// PUT request to update an expense
+expenseRoute.put("/expenses/:id", verifyToken, async (req, res, next) => {
+  try {
+    let expid = req.params.id;
+    let updateData = req.body;
+    let updatedExpense = await ExpenseModel.findOneAndUpdate(
+      { _id: expid, user: req.user.userId, isActive: true },
+      updateData,
+      { new: true }
+    );
+    res.status(200).json({ message: "Updated successfully", payload: updatedExpense });
+  }
+  catch (error) {
+    next(error);
+  }
+})
+
+// DELETE request to softdelete the expense
+expenseRoute.delete("/expenses/:id", verifyToken, async (req, res, next) => {
+  try {
+    let expid = req.params.id;
+    let newExpense = await ExpenseModel.findOneAndUpdate(
+      { _id: expid, user: req.user.userId },
+      { isActive: false },
+      { new: true }
+    );
+    res.status(200).json({ message: "Deleted successfully", payload: newExpense });
+  }
+  catch (error) {
+    next(error);
+  }
+})
+
+expenseRoute.get("/monthly-summary", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.user.userId;
@@ -106,14 +160,12 @@ expenseRoute.get("/monthly-summary", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      payload: error.message
-    });
+    next(error);
   }
 });
+
 //summary
-expenseRoute.get("/summary", verifyToken, async (req, res) => {
+expenseRoute.get("/summary", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.user.userId;
@@ -148,12 +200,12 @@ expenseRoute.get("/summary", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
 //category-summary
-expenseRoute.get("/category-summary", verifyToken, async (req, res) => {
+expenseRoute.get("/category-summary", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.user.userId;
@@ -180,12 +232,12 @@ expenseRoute.get("/category-summary", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });
 
 //top cat
-expenseRoute.get("/top-category", verifyToken, async (req, res) => {
+expenseRoute.get("/top-category", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.user.userId;
@@ -218,6 +270,6 @@ expenseRoute.get("/top-category", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 });

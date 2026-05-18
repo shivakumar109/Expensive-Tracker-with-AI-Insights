@@ -3,9 +3,9 @@ POST http://localhost:4000/user-api/users
 Content-Type: application/json
 
 {
-    "firstName":"user2",
-    "lastName":"2",
-    "email":"user2@",
+    "firstName":"user5",
+    "lastName":"5",
+    "email":"user5@gmail.com",
     "password":"passss",
     "profileImageUrl":"kasbckaj"
 }
@@ -15,7 +15,7 @@ POST http://localhost:4000/user-api/login
 Content-Type: application/json
 
 {
-     "email":"user2@",
+     "email":"user5@gmail.com",
      "password":"passss"
 }
 

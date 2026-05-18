@@ -6,58 +6,68 @@ import mongoose from "mongoose";
 export const budgetRoute=exp.Router();
 
 // Create budget for user(protected route) POST
-budgetRoute.post("/budget",verifyToken,async(req,res)=>{
-    // get userID from req.body
-    let userId=req.user.userId;
-    // update the budget of specific user
-    let budObj=req.body;
-    let newbudObj=await BudgetModel({...budObj,user:userId});
-    await newbudObj.save();
-    // send res
-    res.status(201).json({message:"budet created",payload:newbudObj});
+budgetRoute.post("/budget",verifyToken,async (req, res, next) =>{
+    try{
+        // get userID from req.body
+        let userId=req.user.userId;
+        // update the budget of specific user
+        let budObj=req.body;
+        let newbudObj=await BudgetModel({...budObj,user:userId});
+        await newbudObj.save();
+        // send res
+        res.status(201).json({message:"budet created",payload:newbudObj});
+    }
+    catch(error){
+        next(error);
+    }
 })
 
 // GET budget Route
-budgetRoute.get("/budget",verifyToken,async(req,res)=>{
-    let userId=req.user.userId;
-    // get the budgObj from 
-    let budget=await BudgetModel.findOne({user:userId,isActive:true, });
-    if (!budget) {
-      return res.status(404).json({
-        message: "No budget found"
-      });
+budgetRoute.get("/budget",verifyToken,async (req, res, next) =>{
+    try{
+        let userId=req.user.userId;
+        // get the budgObj from 
+        let budget=await BudgetModel.findOne({user:userId,isActive:true, });
+        if (!budget) {
+          return res.status(404).json({
+            message: "No budget found"
+          });
+        }
+         const totalExpense = await ExpenseModel.aggregate([
+          {
+            $match: {
+              user:new mongoose.Types.ObjectId( userId),
+              type: "expense",
+              isActive: true
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: "$amount" }
+            }
+          }
+        ]);
+        const spentExpenses = totalExpense.length > 0 ? totalExpense[0].total : 0;
+
+        // 3️Calculate remaining budget
+        const remaining = budget.budgetAmount - spentExpenses;
+
+        // 4️ Send response
+        res.status(200).json({message:"budget of user",payload:{
+          user: userId,
+          budgetAmount: budget.budgetAmount,
+          spentExpenses,
+          remaining
+        }});
     }
-     const totalExpense = await ExpenseModel.aggregate([
-      {
-        $match: {
-          user:new mongoose.Types.ObjectId( userId),
-          type: "expense",
-          isActive: true
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$amount" }
-        }
-      }
-    ]);
-    const spentExpenses = totalExpense.length > 0 ? totalExpense[0].total : 0;
-
-    // 3️Calculate remaining budget
-    const remaining = budget.budgetAmount - spentExpenses;
-
-    // 4️ Send response
-    res.status(200).json({message:"budget of user",payload:{
-      user: userId,
-      budgetAmount: budget.budgetAmount,
-      spentExpenses,
-      remaining
-    }});
+    catch(error){
+        next(error);
+    }
 });
 
 // get route to check budget is completed or n
-budgetRoute.get("/check-budget", verifyToken, async (req, res) => {
+budgetRoute.get("/check-budget", verifyToken, async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const budget = await BudgetModel.findOne({
@@ -125,15 +135,12 @@ budgetRoute.get("/check-budget", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      payload: error.message
-    });
+    next(error);
   }
 });
 
 // PUT request to update budget
-budgetRoute.put("/budget/:amount", verifyToken, async (req, res) => {
+budgetRoute.put("/budget/:amount", verifyToken, async (req, res, next) => {
   try {
 
     let userId = req.user.userId;
@@ -158,9 +165,6 @@ budgetRoute.put("/budget/:amount", verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      payload: error.message
-    });
+    next(error);
   }
 });
