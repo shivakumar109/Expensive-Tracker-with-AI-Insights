@@ -83,3 +83,46 @@ export const IncomeExpenseBarChart = ({ expenses }) => {
 
   return <Bar data={data} options={options} />;
 };
+
+export const YearlyExpenseChart = ({ expenses }) => {
+  // Group by year
+  const yearlyData = expenses.reduce((acc, curr) => {
+    const year = new Date(curr.date).getFullYear();
+    if (!acc[year]) acc[year] = { income: 0, expense: 0 };
+    acc[year][curr.type] += curr.amount;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(yearlyData).sort();
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Income',
+        data: labels.map(l => yearlyData[l].income),
+        backgroundColor: '#10B981', // emerald
+        borderRadius: 4,
+      },
+      {
+        label: 'Expense',
+        data: labels.map(l => yearlyData[l].expense),
+        backgroundColor: '#F43F5E', // rose
+        borderRadius: 4,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { labels: { color: '#CBD5E1' } },
+    },
+    scales: {
+      y: { ticks: { color: '#94A3B8' }, grid: { color: '#334155' } },
+      x: { ticks: { color: '#94A3B8' }, grid: { display: false } }
+    }
+  };
+
+  return <Bar data={data} options={options} />;
+};

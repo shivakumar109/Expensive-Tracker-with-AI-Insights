@@ -30,10 +30,11 @@ const expenseSchema = new Schema(
         "Health",
         "Education",
         "Other",
-      ],
-      required: function () {
-        return this.type === "expense";
-      }
+        "Salary",
+        "Business",
+        "Freelance",
+        "Investment"
+      ]
     },
 
     description: {

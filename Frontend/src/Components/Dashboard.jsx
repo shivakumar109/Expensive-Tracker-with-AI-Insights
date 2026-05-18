@@ -8,7 +8,8 @@ import {
   FiDollarSign,
   FiAlertCircle,
   FiPlus,
-  FiTarget
+  FiTarget,
+  FiEdit2
 } from 'react-icons/fi';
 
 import TransactionForm from './TransactionForm';
@@ -30,6 +31,7 @@ const {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   // Format INR
   const formatCurrency = (amount) => {
@@ -173,7 +175,7 @@ const {
             </p>
 
             <h3 className={`text-3xl font-bold ${remainingBudget >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-              {formatCurrency(remainingBudget)}
+              ₹{Math.abs(remainingBudget).toLocaleString()}
             </h3>
 
           </div>
@@ -237,9 +239,7 @@ const {
             </p>
 
             <h3 className={`text-3xl font-bold ${summary.balance >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-
-              {formatCurrency(summary.balance)}
-
+              ₹{Math.abs(summary.balance).toLocaleString()}
             </h3>
 
           </div>
@@ -333,9 +333,8 @@ const {
                 <th className="py-3 px-4">Category</th>
 
                 <th className="py-3 px-4">Type</th>
-
                 <th className="py-3 px-4 text-right">Amount</th>
-
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
 
             </thead>
@@ -383,20 +382,22 @@ const {
 
                   </td>
 
-                  <td
-                    className={`py-4 px-4 text-right font-bold ${
-                      exp.type === 'income'
-                        ? 'text-emerald-400'
-                        : 'text-rose-400'
-                    }`}
-                  >
-
-                    {exp.type === 'income' ? '+' : '-'}
-
-                    {formatCurrency(exp.amount)}
-
+                  <td 
+                      className={`py-4 px-4 text-right font-bold ${
+                        exp.type === 'income' ? 'text-emerald-400' : 'text-rose-400'
+                      }`}
+                    >
+                      {exp.type === 'income' ? '+' : '-'}₹{exp.amount.toLocaleString()}
                   </td>
-
+                  <td className="py-4 px-4 text-center">
+                    <button 
+                      onClick={() => setEditingTransaction(exp)}
+                      className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
+                      title="Edit Transaction"
+                    >
+                      <FiEdit2 size={14} />
+                    </button>
+                  </td>
                 </tr>
 
               ))}
@@ -406,7 +407,7 @@ const {
                 <tr>
 
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="py-8 text-center text-slate-500"
                   >
 
@@ -433,6 +434,13 @@ const {
           onClose={() => setIsModalOpen(false)}
         />
 
+      )}
+
+      {editingTransaction && (
+        <TransactionForm
+          onClose={() => setEditingTransaction(null)}
+          transactionToEdit={editingTransaction}
+        />
       )}
 
       {isBudgetModalOpen && (
