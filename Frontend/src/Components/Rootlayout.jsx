@@ -7,7 +7,7 @@ const Rootlayout = () => {
     <div>
       <Header/>
           {/* component placeholder */}
-          <div className='mx-20 min-h-screen'>
+          <div className='min-h-screen'>
                <Outlet/>
           </div>
           <Footer/> 

@@ -62,7 +62,7 @@ const {
 
   return (
 
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       {/* Top Section */}
       <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-4">
