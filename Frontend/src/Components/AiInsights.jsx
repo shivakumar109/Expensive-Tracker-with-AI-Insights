@@ -53,7 +53,7 @@ const AiInsights = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 h-full px-4 sm:px-6 lg:px-8 py-8">
       {/* AI Insights Panel */}
       <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl flex flex-col h-full max-h-[80vh]">
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-700">
