@@ -5,10 +5,10 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { userRoute } from './APIs/userAPI.js';
+import { userRoute } from './APIs/userApi.js';
 import { expenseRoute } from "./APIs/expenseAPI.js"
 import { budgetRoute } from './APIs/budgetAPI.js';
-import { aiRoute } from './APIs/aiAPI.js';
+import { aiRoute } from './APIs/aiApi.js';
 import { receiptRoute } from './APIs/receiptAPI.js';
 
 //process.env 
