@@ -86,7 +86,20 @@ function App() {
 
     <BudgetProvider>
 
-      <Toaster position="top-right" />
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          style: {
+            fontSize: '1.25rem',
+            padding: '16px 24px',
+          },
+        }}
+        containerStyle={{
+          top: '50%',
+          bottom: 'auto',
+          transform: 'translateY(-50%)'
+        }}
+      />
       <RouterProvider router={routerObj} />
 
     </BudgetProvider>
