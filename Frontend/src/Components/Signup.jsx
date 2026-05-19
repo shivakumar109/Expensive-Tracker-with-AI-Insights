@@ -36,6 +36,8 @@ const Signup = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
+                minLength={2}
+                maxLength={30}
                 className="mt-1 w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="John"
               />
@@ -48,6 +50,8 @@ const Signup = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
+                minLength={2}
+                maxLength={30}
                 className="mt-1 w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Doe"
               />
@@ -73,6 +77,7 @@ const Signup = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              minLength={6}
               className="mt-1 w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder=""
             />

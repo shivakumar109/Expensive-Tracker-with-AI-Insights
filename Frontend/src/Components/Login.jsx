@@ -101,6 +101,7 @@ const Login = () => {
               value={credentials.password}
               onChange={handleChange}
               required
+              minLength={6}
               className="mt-1 w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               placeholder="••••••••"
             />

@@ -34,7 +34,7 @@ export const authenticate = async ({email,password})=>{
      //check user with email and role
      const user = await UserModel.findOne({ email: normalizedEmail });
      if(!user){
-          const err= new Error("Invalid email");
+          const err= new Error("Email not found. Please sign up first.");
           err.status= 401;
           throw err;
      }
