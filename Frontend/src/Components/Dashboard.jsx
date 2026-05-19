@@ -65,7 +65,7 @@ const {
     <div className="space-y-8 max-w-7xl mx-auto">
 
       {/* Top Section */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-4">
 
         {/* Left */}
         <div>
@@ -106,7 +106,7 @@ const {
       {/* Budget Section */}
       <div>
 
-        <div className="flex justify-between items-center mb-5">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-5">
           <h2 className="text-2xl font-bold text-white">
             This Year Budget
           </h2>
@@ -253,7 +253,7 @@ const {
 
         <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
 
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
 
             <h3 className="text-lg font-bold text-white flex items-center">
 
@@ -305,7 +305,7 @@ const {
       {/* Recent Transactions */}
       <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
 
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
           <h3 className="text-lg font-bold text-white">
             Recent Transactions
           </h3>

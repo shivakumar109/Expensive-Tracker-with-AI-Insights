@@ -23,11 +23,11 @@ function Header() {
 
     <header className="bg-white shadow-md sticky top-0 z-50">
 
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-6 py-4 gap-4 md:gap-0">
 
         {/* Logo */}
         <div
-          className="flex items-center gap-3 cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer mb-2 md:mb-0"
           onClick={() => navigate('/')}
         >
 
@@ -44,9 +44,9 @@ function Header() {
         </div>
 
         {/* Navigation */}
-        <nav>
+        <nav className="w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
 
-          <ul className="flex items-center gap-8 text-lg font-semibold">
+          <ul className="flex items-center justify-center md:justify-end gap-4 md:gap-8 text-sm md:text-lg font-semibold min-w-max px-2">
 
             {/* Home */}
             <li>
