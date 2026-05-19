@@ -86,6 +86,7 @@ function App() {
 
     <BudgetProvider>
 
+      <Toaster position="top-right" />
       <RouterProvider router={routerObj} />
 
     </BudgetProvider>
