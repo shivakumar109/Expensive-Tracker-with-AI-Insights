@@ -37,7 +37,7 @@ function Home() {
         </p>
 
         {/* Buttons */}
-        <div className="flex justify-center gap-6">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
 
           {!isLoggedIn ? (
             <>

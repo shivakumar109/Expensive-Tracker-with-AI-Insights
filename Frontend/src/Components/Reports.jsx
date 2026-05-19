@@ -45,7 +45,7 @@ const Reports = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
         <div>
           <h1 className="text-3xl font-bold text-white">Reports & Analytics</h1>
           <p className="text-slate-400 mt-1">Visualize your financial data and export reports.</p>
