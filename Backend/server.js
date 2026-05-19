@@ -27,7 +27,7 @@ const app = exp()
 
 // Security middlewares
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: ['https://expensive-tracker-with-ai-insights-mqpv.onrender.com','http://localhost:5173'], credentials: true }));
 
 // Rate limiting
 const limiter = rateLimit({
