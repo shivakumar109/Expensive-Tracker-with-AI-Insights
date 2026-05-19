@@ -69,9 +69,14 @@ app.use('/receipt-api', receiptRoute);
 
 //error handling middle ware
 app.use((err, req, res, next) => {
-  console.error("Error occurred: ", err);
-  
   const statusCode = err.status || 500;
+  
+  if (statusCode === 500) {
+    console.error("Server Error occurred: ", err);
+  } else {
+    console.log(`[Client Error] ${statusCode}: ${err.message}`);
+  }
+  
   const errorResponse = {
     message: err.message || "Internal Server Error",
     payload: process.env.NODE_ENV === 'production' ? null : err.stack
