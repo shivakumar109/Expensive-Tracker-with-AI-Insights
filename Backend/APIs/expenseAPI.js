@@ -50,7 +50,7 @@ expenseRoute.get("/expenses", verifyToken, async (req, res, next) => {
     const skip = (page - 1) * limit;
     
     let expenseObj = await ExpenseModel.find(query)
-      .sort({ date: -1 })
+      .sort({ date: -1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
       
