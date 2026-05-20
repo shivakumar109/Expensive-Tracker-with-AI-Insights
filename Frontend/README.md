@@ -1,16 +1,51 @@
-# React + Vite
+# Expense Tracker - Frontend UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the Frontend application for the **Expense Tracker with AI Insights** project. It is built with React, Vite, and Tailwind CSS to provide a fast, responsive, and beautiful user interface for tracking expenses and viewing AI-driven financial insights.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19**: Modern UI library for building component-based interfaces.
+- **Vite**: Next-generation frontend tooling for rapid development.
+- **Tailwind CSS v4**: Utility-first CSS framework for rapid and responsive styling.
+- **Chart.js & React-Chartjs-2**: Interactive and beautiful data visualization.
+- **React Router v7**: Client-side routing for seamless navigation.
+- **Lucide React & React Icons**: Sleek, modern iconography.
+- **Axios**: Promise-based HTTP client for the browser.
+- **html2pdf.js**: Easy generation and downloading of PDF reports.
 
-## React Compiler
+##  Directory Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+Frontend/
+├── public/              # Static assets (favicon, images)
+├── src/                 # Application source code
+│   ├── assets/          # Project assets
+│   ├── components/      # Reusable UI components
+│   ├── pages/           # Route/Page components (Dashboard, Login, etc.)
+│   ├── App.jsx          # Main application component
+│   └── main.jsx         # Application entry point
+├── package.json         # Frontend dependencies and scripts
+└── vite.config.js       # Vite configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+##  Setup & Development
+
+### 1. Install Dependencies
+
+npm install
+
+
+### 2. Start the Development Server
+
+npm run dev
+
+The app will typically be available at [http://localhost:5173](http://localhost:5173).
+
+### 3. Build for Production
+To build the application for production deployment:
+
+npm run build
+
+
+## Main Project README
+For information on the full-stack setup, including backend APIs and AI integrations, please refer to the [Main Project README](../README.md) located in the root directory.
