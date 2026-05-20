@@ -94,11 +94,6 @@ function App() {
             padding: '16px 24px',
           },
         }}
-        containerStyle={{
-          top: '50%',
-          bottom: 'auto',
-          transform: 'translateY(-50%)'
-        }}
       />
       <RouterProvider router={routerObj} />
 
