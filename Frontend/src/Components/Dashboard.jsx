@@ -175,7 +175,7 @@ const {
             </p>
 
             <h3 className={`text-3xl font-bold ${remainingBudget >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-              ₹{Math.abs(remainingBudget).toLocaleString()}
+              {remainingBudget < 0 ? '-' : ''}₹{Math.abs(remainingBudget).toLocaleString()}
             </h3>
 
           </div>
@@ -239,7 +239,7 @@ const {
             </p>
 
             <h3 className={`text-3xl font-bold ${summary.balance >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
-              ₹{Math.abs(summary.balance).toLocaleString()}
+              {summary.balance < 0 ? '-' : ''}₹{Math.abs(summary.balance).toLocaleString()}
             </h3>
 
           </div>
