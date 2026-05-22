@@ -49,7 +49,7 @@ GET http://localhost:4000/expense-api/expenses
 GET http://localhost:4000/expense-api/expenses/Bills
 
 ###delete expense by id
-PUT http://localhost:4000/expense-api/expenses/69b7cbd4c6c7c75900ae09bf
+DELETE http://localhost:4000/expense-api/expenses/69b7cbd4c6c7c75900ae09bf
 
 ### monthly-summary
 GET http://localhost:4000/expense-api/monthly-summary
