@@ -9,7 +9,8 @@ import {
   FiAlertCircle,
   FiPlus,
   FiTarget,
-  FiEdit2
+  FiEdit2,
+  FiTrash2
 } from 'react-icons/fi';
 
 import TransactionForm from './TransactionForm';
@@ -22,7 +23,8 @@ const Dashboard = () => {
   const {
   expenses,
   summary,
-  loading
+  loading,
+  deleteExpense
 } = useContext(ExpenseContext);
 
 const {
@@ -32,6 +34,16 @@ const {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      try {
+        await deleteExpense(id);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   // Format INR
   const formatCurrency = (amount) => {
@@ -390,13 +402,22 @@ const {
                       {exp.type === 'income' ? '+' : '-'}₹{exp.amount.toLocaleString()}
                   </td>
                   <td className="py-4 px-4 text-center">
-                    <button 
-                      onClick={() => setEditingTransaction(exp)}
-                      className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
-                      title="Edit Transaction"
-                    >
-                      <FiEdit2 size={14} />
-                    </button>
+                    <div className="flex justify-center gap-2">
+                      <button 
+                        onClick={() => setEditingTransaction(exp)}
+                        className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
+                        title="Edit Transaction"
+                      >
+                        <FiEdit2 size={14} />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(exp._id)}
+                        className="p-2 bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white rounded transition-colors"
+                        title="Delete Transaction"
+                      >
+                        <FiTrash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
 

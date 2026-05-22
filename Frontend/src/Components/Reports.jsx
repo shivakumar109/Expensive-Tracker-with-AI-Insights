@@ -1,14 +1,24 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ExpenseContext } from '../Context/ExpenseContext';
 import { ExpensePieChart, IncomeExpenseBarChart, YearlyExpenseChart } from './ExpenseChart';
-import { FiFileText, FiEdit2 } from 'react-icons/fi';
+import { FiFileText, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import TransactionForm from './TransactionForm';
 
 const Reports = () => {
-  const { expenses } = useContext(ExpenseContext);
+  const { expenses, deleteExpense } = useContext(ExpenseContext);
   const reportRef = useRef();
   const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      try {
+        await deleteExpense(id);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   const getFormattedDate = () => {
     return new Date().toISOString().split('T')[0];
@@ -125,13 +135,22 @@ const Reports = () => {
                       ₹{exp.amount.toFixed(2)}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <button 
-                        onClick={() => setEditingTransaction(exp)}
-                        className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
-                        title="Edit Transaction"
-                      >
-                        <FiEdit2 size={14} />
-                      </button>
+                      <div className="flex justify-center gap-2">
+                        <button 
+                          onClick={() => setEditingTransaction(exp)}
+                          className="p-2 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white rounded transition-colors"
+                          title="Edit Transaction"
+                        >
+                          <FiEdit2 size={14} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(exp._id)}
+                          className="p-2 bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white rounded transition-colors"
+                          title="Delete Transaction"
+                        >
+                          <FiTrash2 size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
